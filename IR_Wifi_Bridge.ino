@@ -3,10 +3,18 @@
 #include <WiFiClient.h>
 
 // define if you want output on the M5Stack display
-#define M5_STACK_SUPPORT
+//#define M5_STACK_SUPPORT
+// define if you want output on the M5Stick display
+#define M5_STICK_SUPPORT
 
 #if defined(M5_STACK_SUPPORT)
 #include <M5Stack.h>
+#define USE_DISPLAY
+#define _M5 m5
+#elif defined(M5_STICK_SUPPORT)
+#include <M5StickC.h>
+#define USE_DISPLAY
+#define _M5 M5
 #endif
 
 #include "webserver/WebServer.h"
@@ -18,7 +26,11 @@
 
 #include "indexHtml.h"
 
-const byte LED_PIN = 21;
+#if defined(M5_STICK_SUPPORT)
+const byte LED_PIN = 9; // internal IR LED on M5StickC
+#else
+const byte LED_PIN = 21; // set to where you IR LED is connected to
+#endif
 IRsend irsend(LED_PIN);
 
 const IPAddress apIP(192, 168, 4, 1);
@@ -38,8 +50,8 @@ unsigned int ir_buffer[ir_buffer_length];
 
 void setup() 
 {
-#if defined(M5_STACK_SUPPORT)
-  m5.begin();
+#if defined(USE_DISPLAY)
+  _M5.begin();
 #endif  
   preferences.begin("wifi-config");
 
@@ -63,24 +75,24 @@ void loop()
 void output(const char* s)
 {
   Serial.println(s);
-#if defined(M5_STACK_SUPPORT)  
-  M5.Lcd.println(s);
+#if defined(USE_DISPLAY)  
+  _M5.Lcd.println(s);
 #endif  
 }
 void output(const char* s1, const char* s2)
 {
   Serial.print(s1);
   Serial.println(s2);
-#if defined(M5_STACK_SUPPORT)  
-  M5.Lcd.print(s1);
-  M5.Lcd.println(s2);
+#if defined(USE_DISPLAY)  
+  _M5.Lcd.print(s1);
+  _M5.Lcd.println(s2);
 #endif  
 }
 void output(char c)
 {
   Serial.print(c);
-#if defined(M5_STACK_SUPPORT)  
-  M5.Lcd.print(c);
+#if defined(USE_DISPLAY)  
+  _M5.Lcd.print(c);
 #endif  
 }
 
