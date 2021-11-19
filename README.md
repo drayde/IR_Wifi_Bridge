@@ -2,7 +2,12 @@
 
 Small EPS32 based webserver that sends IR commands to a TV via an IR LED attached to the EPS32.
 
-Update Jan-2021: Works with an off-the-shelf M5Stick-C using its built-in IR LED.
+Update Nov-2021: 
+* Updated to use IRremote version 3.4
+* improved HTML/CSS to work better on iPhones
+* blink an LED when sending out IR codes as feedback to the user
+Update Jan-2021: 
+* Works with an off-the-shelf M5Stick-C using its built-in IR LED.
 
 It can be used in two different ways: with a browser or with the Android app irplus.
 
@@ -10,7 +15,12 @@ It can be used in two different ways: with a browser or with the Android app irp
 
 After connecting your ESP32 to your Wifi, browse to http://<eps32_ip>/ui
 It will display a simple UI with buttons to control a TV.
-It is hardcoded with codes for a LG TV. To use with your specific TV, change indexHtml.h. Check out https://irplus-remote.github.io/ to get code for many devices.
+
+![Screenshot](screenshot.png)
+
+It is hardcoded with codes for a LG TV. To use with your specific TV, change indexHtml.h. Check out https://irplus-remote.github.io/ to get code for many more devices.
+
+
 
 ## irplus mode
 
