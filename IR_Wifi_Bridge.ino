@@ -22,16 +22,17 @@
 #include "webserver/parsing.cpp"
 
 #include <Preferences.h>
-#include <IRremote.h>
+#include <IRremote.h>  // version 3.4
 
 #include "indexHtml.h"
 
 #if defined(M5_STICK_SUPPORT)
-const byte LED_PIN = 9; // internal IR LED on M5StickC
+#define IR_SEND_PIN  9 // internal IR LED on M5StickC
+#define FEEDBACK_PIN 10 // internal LED on M5StickC
 #else
-const byte LED_PIN = 21; // set to where you IR LED is connected to
+#define IR_SEND_PIN  21 // set to where your IR LED is connected to
+#define FEEDBACK_PIN 22  // set to where your feedback LED is connected to
 #endif
-IRsend irsend(LED_PIN);
 
 const IPAddress apIP(192, 168, 4, 1);
 const char* apSSID = "IR_WIFI_BRIDGE";
@@ -46,10 +47,17 @@ WebServer webServer(80);
 Preferences preferences;
 
 const size_t ir_buffer_length = 512;
-unsigned int ir_buffer[ir_buffer_length];
+uint16_t ir_buffer[ir_buffer_length];
 
 void setup() 
 {
+  pinMode(IR_SEND_PIN, OUTPUT);
+  pinMode(FEEDBACK_PIN, OUTPUT);
+
+  digitalWrite(FEEDBACK_PIN, HIGH);
+  
+  IrSender.begin(IR_SEND_PIN, false);
+  
 #if defined(USE_DISPLAY)
   _M5.begin();
 #endif  
@@ -124,7 +132,7 @@ bool sendIR(String carrier, String code)
       else { output("code entry is not a number"); return false; } 
     }
     if (entryInt < 0) { output("code entry is negative"); return false; } 
-    ir_buffer[bufferIndex] = (unsigned int) entryInt;
+    ir_buffer[bufferIndex] = (uint16_t) entryInt;
     
     //Serial.print(entryInt);
     //Serial.print("->");
@@ -158,7 +166,8 @@ bool sendIR(String carrier, String code)
   if (true)
   {
     Serial.print("carrier: "); 
-    Serial.println(carrierInt);
+    Serial.print(carrierInt/1000);
+    Serial.println(" kHz"); 
     Serial.print("code:");
     for (int i=0; i<bufferIndex; ++i) {
       Serial.print(i==0 ? ' ' : ',');
@@ -166,8 +175,11 @@ bool sendIR(String carrier, String code)
     }
     Serial.println();
   }
-  irsend.sendRaw(ir_buffer, bufferIndex, carrierInt);
-
+  
+  digitalWrite(FEEDBACK_PIN, LOW);  
+  IrSender.sendRaw(ir_buffer, bufferIndex, carrierInt/1000);
+  digitalWrite(FEEDBACK_PIN, HIGH);
+  
   return true;
 }
 
