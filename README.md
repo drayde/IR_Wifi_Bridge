@@ -4,11 +4,11 @@ Small EPS32 based webserver that sends IR commands to a TV via an IR LED attache
 
 Updates 
 * Nov-2021: 
-** Updated to use IRremote version 3.4
-** improved HTML/CSS to work better on iPhones
-** blink an LED when sending out IR codes as feedback to the user
+  * Updated to use IRremote version 3.4
+  * improved HTML/CSS to work better on iPhones
+  * blink an LED when sending out IR codes as feedback to the user
 * Update Jan-2021: 
-** Works with an off-the-shelf M5Stick-C using its built-in IR LED.
+  * Works with an off-the-shelf M5Stick-C using its built-in IR LED.
 
 It can be used in two different ways: with a browser or with the Android app irplus.
 
